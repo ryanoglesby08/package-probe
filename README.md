@@ -48,8 +48,7 @@ const accessToken = process.env.ACCESS_TOKEN
 const results = await probe({
   accessToken,
   owner: 'ryanoglesby08',
-  searchTerm: 'react',
-  json: true
+  searchTerm: 'react'
 })
 
 console.log(results)
