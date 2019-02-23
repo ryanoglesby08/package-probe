@@ -23,7 +23,7 @@ Package Probe uses the Github API to scan for a package. You will need to genera
 ```
 $ package-probe --help
 
-  Usage: cli [options]
+  Usage: package-probe [options]
 
   Options:
 
