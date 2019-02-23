@@ -43,8 +43,11 @@ $ package-probe --help
 ```js
 import probe from 'package-probe'
 
+const accessToken = process.env.ACCESS_TOKEN
+
 const results = await probe({
-  accessToken: ACCESS_TOKEN
+  accessToken,
+  owner: 'ryanoglesby08',
   searchTerm: 'react'
 })
 
