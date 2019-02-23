@@ -58,8 +58,8 @@ console.log(results)
 
 Searching my Github repositories for usage of React.
 
-```
-package-probe --access-token <my access token> --search-term react --owner ryanoglesby08
+```bash
+$ package-probe --access-token <my access token> --search-term react --owner ryanoglesby08
 
 ┌──────────────────────────────────┬─────────────────┬───────────────────────────────┐
 │ movie-night                      │ ^16.7.0-alpha.2 │ Tue, 20 Nov 2018 23:31:30 GMT │
