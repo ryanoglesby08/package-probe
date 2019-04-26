@@ -1,5 +1,7 @@
 # Package Probe 🛰
 
+[![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg)](http://commitizen.github.io/cz-cli/)
+
 Scan a Github organization for usage of a package.
 
 Package Probe can help you answer questions such as "Which repositories in my organization are using React?" or "Which version of internal dependency X are my organization's projects using?"
@@ -48,7 +50,7 @@ const accessToken = process.env.ACCESS_TOKEN
 const results = await probe({
   accessToken,
   owner: 'ryanoglesby08',
-  searchTerm: 'react'
+  searchTerm: 'react',
 })
 
 console.log(results)
