@@ -1,6 +1,7 @@
 # Package Probe 🛰
 
-[![Build Status](https://travis-ci.org/ryanoglesby08/package-probe.svg?branch=master)](https://travis-ci.org/ryanoglesby08/package-probe)
+[![Build Status](https://api.travis-ci.org/ryanoglesby08/package-probe.svg)](https://travis-ci.org/ryanoglesby08/package-probe)
+[![npm version](https://img.shields.io/npm/v/package-probe.svg)](https://www.npmjs.com/package/package-probe)
 [![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg)](http://commitizen.github.io/cz-cli/)
 
 Scan a Github organization for usage of a package.
