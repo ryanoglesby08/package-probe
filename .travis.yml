@@ -6,8 +6,6 @@ jobs:
   include:
     - stage: release
       node_js: lts/*
-      # Skip tests as they have already run. https://github.com/semantic-release/semantic-release/blob/master/docs/recipes/travis.md
-      script: skip
       deploy:
         provider: script
         skip_cleanup: true
