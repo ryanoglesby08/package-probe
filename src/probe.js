@@ -64,7 +64,7 @@ const enhanceWithLastEdit = async (apiClient, owner, matchedRepos) => {
   return await Promise.all(
     matchedRepos.map(async repo => {
       const repoInfo = await apiClient.getRepo(owner, repo.repositoryName)
-      const lastEdit = repoInfo.meta['last-modified'] || ''
+      const lastEdit = repoInfo.headers['last-modified'] || ''
 
       return Object.assign({}, repo, { lastEdit })
     })
