@@ -32,22 +32,21 @@
     "semantic-release": "semantic-release"
   },
   "dependencies": {
-    "@octokit/rest": "^15.2.5",
-    "babel-runtime": "^6.26.0",
+    "@octokit/rest": "^16.25.0",
     "cli-table": "^0.3.1",
     "commander": "^2.9.0",
     "lodash": "^4.17.5",
     "node-fetch": "^2.1.2"
   },
   "devDependencies": {
-    "babel-cli": "^6.26.0",
-    "babel-plugin-transform-runtime": "^6.23.0",
-    "babel-preset-env": "^1.6.1",
-    "babel-preset-stage-2": "^6.24.1",
+    "@babel/cli": "^7.4.4",
+    "@babel/core": "^7.4.4",
+    "@babel/preset-env": "^7.4.4",
+    "babel-jest": "^24.7.1",
     "commitizen": "^3.1.1",
     "cz-conventional-changelog": "^2.1.0",
     "husky": "^2.1.0",
-    "jest": "^22.4.3",
+    "jest": "^24.7.1",
     "prettier": "^1.11.1",
     "pretty-quick": "^1.4.1",
     "semantic-release": "^15.13.3"

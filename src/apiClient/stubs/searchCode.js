@@ -90,7 +90,7 @@ export default {
       },
     ],
   },
-  meta: {
+  headers: {
     'access-control-allow-origin': '*',
     'access-control-expose-headers':
       'ETag, Link, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval',

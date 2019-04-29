@@ -42,7 +42,7 @@ const getRepo = async (owner, repo) => {
 
   return Promise.resolve({
     data: {},
-    meta: {
+    headers: {
       'last-modified': searchResult.lastModified,
     },
   })
