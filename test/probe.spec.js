@@ -3,7 +3,15 @@ import { setupPolly } from 'setup-polly-jest'
 
 import probe from '../src/probe'
 
+let recordReplayConfig = {}
+if (process.env.CI) {
+  recordReplayConfig = {
+    mode: 'replay',
+    recordIfMissing: false,
+  }
+}
 setupPolly({
+  ...recordReplayConfig,
   adapters: ['node-http'],
   persister: 'fs',
   persisterOptions: {
