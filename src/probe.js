@@ -71,7 +71,7 @@ const enhanceWithLastEdit = async (apiClient, owner, matchedRepos) => {
   )
 }
 
-const check = async ({ accessToken, exclude, owner, partialMatches, searchTerm, stub }) => {
+const probe = async ({ accessToken, exclude, owner, partialMatches, searchTerm, stub }) => {
   const apiClient = stub ? createStubClient() : createGithubClient(accessToken)
 
   const searchResults = await apiClient.searchCode(owner, searchTerm)
@@ -86,4 +86,4 @@ const check = async ({ accessToken, exclude, owner, partialMatches, searchTerm, 
   return await enhanceWithLastEdit(apiClient, owner, matchedRepos)
 }
 
-export default check
+export default probe

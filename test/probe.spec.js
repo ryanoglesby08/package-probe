@@ -1,125 +1,115 @@
+import path from 'path'
+import { setupPolly } from 'setup-polly-jest'
+
 import probe from '../src/probe'
-import createGithubClient, { addSearchResults } from '../src/apiClient/githubClient'
 
-jest.mock('../src/apiClient/githubClient')
+setupPolly({
+  adapters: ['node-http'],
+  persister: 'fs',
+  persisterOptions: {
+    fs: {
+      recordingsDir: path.resolve(__dirname, '__recordings__'),
+    },
+  },
+})
 
-describe('Adoption checker', () => {
-  beforeEach(() => {
-    // Clear all instances and calls to constructor and all methods:
-    createGithubClient.mockClear()
+it('finds versions of a package', async () => {
+  const results = await probe({
+    owner: 'ryanoglesby08',
+    searchTerm: 'commander',
   })
 
-  it('finds versions of a package', async () => {
-    addSearchResults([
-      {
-        name: 'some-repo',
-        fullName: 'an-owner/some-repo',
-        dependencies: { babel: '^6.26.0', react: '^16.0.0' },
-      },
-      {
-        name: 'another-repo',
-        fullName: 'an-owner/another-repo',
-        dependencies: { vue: '^2.0.0' },
-      },
-    ])
+  expect(results).toMatchInlineSnapshot(`
+                    Array [
+                      Object {
+                        "lastEdit": "Sat, 06 Oct 2018 20:50:11 GMT",
+                        "repositoryName": "my-cli",
+                        "version": "^2.14.1",
+                      },
+                      Object {
+                        "lastEdit": "Mon, 29 Apr 2019 21:58:02 GMT",
+                        "repositoryName": "package-probe",
+                        "version": "^2.9.0",
+                      },
+                    ]
+          `)
+})
 
-    const results = await probe({
-      owner: 'an-owner',
-      searchTerm: 'react',
-    })
-
-    expect(results).toEqual([
-      expect.objectContaining({
-        repositoryName: 'some-repo',
-        version: '^16.0.0',
-      }),
-    ])
+it('handles partial matches', async () => {
+  const results = await probe({
+    owner: 'ryanoglesby08',
+    searchTerm: 'emotion',
+    partialMatches: true,
   })
 
-  it('gets the last modified date of repositories', async () => {
-    addSearchResults([
-      {
-        name: 'some-repo',
-        fullName: 'an-owner/some-repo',
-        lastModified: 'Mon, 17 Apr 2018 15:33:29 GMT',
-        dependencies: { react: '^16.0.0' },
-      },
-    ])
-
-    const results = await probe({
-      owner: 'an-owner',
-      searchTerm: 'react',
-    })
-
-    expect(results).toEqual([
-      expect.objectContaining({
-        repositoryName: 'some-repo',
-        lastEdit: 'Mon, 17 Apr 2018 15:33:29 GMT',
-      }),
-    ])
-  })
-
-  it('handles partial matches', async () => {
-    addSearchResults([
-      {
-        name: 'some-repo',
-        fullName: 'an-owner/some-repo',
-        dependencies: {
-          'babel-cli': '^6.26.0',
-          'babel-core': '^6.26.0',
-          'babel-eslint': '^8.0.0',
-          react: '^16.0.0',
+  expect(results).toMatchInlineSnapshot(`
+    Array [
+      Object {
+        "lastEdit": "Sat, 04 May 2019 15:42:58 GMT",
+        "repositoryName": "the-eod-machine",
+        "version": Object {
+          "emotion": "^9.2.6",
+          "emotion-theming": "^9.2.6",
+          "react-emotion": "^9.2.6",
         },
       },
-    ])
-
-    const results = await probe({
-      owner: 'an-owner',
-      searchTerm: 'babel',
-      partialMatches: true,
-    })
-
-    expect(results).toEqual([
-      expect.objectContaining({
-        repositoryName: 'some-repo',
-        version: {
-          'babel-cli': '^6.26.0',
-          'babel-core': '^6.26.0',
-          'babel-eslint': '^8.0.0',
+      Object {
+        "lastEdit": "Sun, 02 Dec 2018 01:31:03 GMT",
+        "repositoryName": "ryanoglesby08.github.com",
+        "version": Object {
+          "emotion": "^9.1.2",
+          "emotion-server": "^9.1.2",
+          "gatsby-plugin-emotion": "^1.1.16",
+          "react-emotion": "^9.1.2",
         },
-      }),
-    ])
+      },
+    ]
+  `)
+})
+
+it('can exclude matches in specified repositories', async () => {
+  const results = await probe({
+    owner: 'ryanoglesby08',
+    searchTerm: 'lodash',
+    exclude: 'ryanoglesby08/the-eod-machine,ryanoglesby08/package-probe',
   })
 
-  it('can exclude matches in specified repositories', async () => {
-    addSearchResults([
-      {
-        name: 'some-repo',
-        fullName: 'an-owner/some-repo',
-        dependencies: { react: '^16.0.0' },
-      },
-      {
-        name: 'excluded-repo',
-        fullName: 'an-owner/excluded-repo',
-        dependencies: { react: '^16.0.0' },
-      },
-      {
-        name: 'another-excluded-repo',
-        fullName: 'an-owner/another-excluded-repo',
-        dependencies: { react: '^16.0.0' },
-      },
-    ])
+  expect(results).toMatchInlineSnapshot(`
+                Array [
+                  Object {
+                    "lastEdit": "Sun, 02 Dec 2018 01:31:03 GMT",
+                    "repositoryName": "ryanoglesby08.github.com",
+                    "version": "^4.17.5",
+                  },
+                ]
+        `)
+})
 
-    const results = await probe({
-      owner: 'an-owner',
-      searchTerm: 'react',
-      exclude: 'an-owner/excluded-repo,an-owner/another-excluded-repo',
-    })
+it('uses an access token if provided', async () => {
+  /*
+    This `accessToken` has been revoked so that it can be checked in.
+    If this test needs to be re-recorded, generate a new one.
+  */
+  const accessToken = '58d19840f07de77fa81982caa045aac9f6438de3'
 
-    expect(results).toEqual([
-      expect.objectContaining({
-        repositoryName: 'some-repo',
-      }),
-    ])
+  const results = await probe({
+    accessToken,
+    owner: 'ryanoglesby08',
+    searchTerm: 'commander',
   })
+
+  expect(results).toMatchInlineSnapshot(`
+        Array [
+          Object {
+            "lastEdit": "Sat, 06 Oct 2018 20:50:11 GMT",
+            "repositoryName": "my-cli",
+            "version": "^2.14.1",
+          },
+          Object {
+            "lastEdit": "Mon, 29 Apr 2019 21:58:02 GMT",
+            "repositoryName": "package-probe",
+            "version": "^2.9.0",
+          },
+        ]
+    `)
 })

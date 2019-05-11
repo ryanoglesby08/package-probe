@@ -20,12 +20,17 @@ class Client {
   async getContents(repo, url, path) {
     const ref = new URL(url).searchParams.get('ref')
 
+    let headers = {}
+    if (this.token) {
+      headers = {
+        Authorization: `token ${this.token}`,
+      }
+    }
+
     // Use the raw.githubusercontent.com web url to avoid rate limiting
     return fetch(`https://raw.githubusercontent.com/${repo}/${ref}/${path}`, {
       method: 'GET',
-      headers: {
-        Authorization: `token ${this.token}`,
-      },
+      headers,
     }).then(res => res.json())
   }
 

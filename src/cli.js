@@ -3,7 +3,7 @@
 import commander from 'commander'
 import Table from 'cli-table'
 
-import check from './probe'
+import probe from './probe'
 import { version as packageJsonVersion } from '../package.json'
 
 const outputAsTable = (results, partialMatches) => {
@@ -38,7 +38,7 @@ commander.version(packageJsonVersion).parse(process.argv)
 const run = async () => {
   const { accessToken, exclude, json, owner, partialMatches, searchTerm, stub } = commander
 
-  const results = await check({
+  const results = await probe({
     accessToken,
     exclude,
     owner,
