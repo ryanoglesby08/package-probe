@@ -18,7 +18,7 @@
   },
   "repository": "github:ryanoglesby08/package-probe",
   "main": "./bin/probe.js",
-  "bin": "./bin/cli.js",
+  "bin": "./bin/package-probe.js",
   "files": [
     "bin"
   ],
