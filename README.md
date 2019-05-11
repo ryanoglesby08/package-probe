@@ -40,6 +40,7 @@ $ package-probe --help
     --partial-matches         return results for partial matches of the search term
     --search-term <term>      search term
     --stub                    turn on response stubs for testing
+    -V, --version             output the version number
     -h, --help                output usage information
 ```
 
