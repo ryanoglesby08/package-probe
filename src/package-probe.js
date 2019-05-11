@@ -9,11 +9,11 @@ import { version as packageJsonVersion } from '../package.json'
 commander
   .option('--access-token <token>', 'Github personal access token')
   .option('--exclude <repositories>', 'exclude repositories by these names (comma-separated)')
-  .option('--json', 'output results as json (default output is a table)')
+  .option('--json', 'output results as json (default output is a table)', false)
   .option('--owner <owner>', 'owner or organization to search')
-  .option('--partial-matches', 'return results for partial matches of the search term')
+  .option('--partial-matches', 'return results for partial matches of the search term', false)
   .option('--search-term <term>', 'search term')
-  .option('--stub', 'turn on response stubs for testing')
+  .option('--stub', 'turn on response stubs for testing', false)
 
 commander.version(packageJsonVersion).parse(process.argv)
 
