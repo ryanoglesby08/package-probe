@@ -4,7 +4,6 @@ import commander from 'commander'
 import Table from 'cli-table'
 
 import probe from './probe'
-import { version as packageJsonVersion } from '../package.json'
 
 commander
   .option('--access-token <token>', 'Github personal access token')
@@ -15,7 +14,7 @@ commander
   .option('--search-term <term>', 'search term')
   .option('--stub', 'turn on response stubs for testing', false)
 
-commander.version(packageJsonVersion).parse(process.argv)
+commander.parse(process.argv)
 
 if (process.argv.slice(2).length == 0) {
   commander.help()

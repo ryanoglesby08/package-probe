@@ -17,11 +17,13 @@ $ npm install -g package-probe
 
 ## Set up (one time)
 
-Package Probe uses the Github API to scan for a package. You will need to generate a "Personal access token" that has access to your organization and pass it to Package Probe on each scan.
+Package Probe uses the Github API to scan for a package. If you want to search in a private Github organization, you'll need to create a Github Personal Access Token that has access to your organization and pass it to `package-probe` on each scan.
+
+If you are scanning public organizations/owners, you can skip this step.
 
 - Generate a [Github Personal access token](https://github.com/settings/tokens) in your Github profile developer settings
 - Grant the `repo` scope to the token (_Package Probe reads information and does not store any of your data_)
-- Copy the token! You will pass it as a parameter to Package Probe. (If you forget your token you must create a new one)
+- Copy the token! You will pass it as a parameter to Package Probe. (If you forget your token you can re-generate it)
 
 ## Command line usage
 
@@ -31,15 +33,13 @@ $ package-probe --help
   Usage: package-probe [options]
 
   Options:
-
     --access-token <token>    Github personal access token
-    --search-term <term>      Search term
-    --exclude <repositories>  Exclude repositories by these names. Comma-separated.
-    --owner <owner>           Owner or organization to search.
-    --json                    Output results as json. Default output is a table.
-    --partial-matches         Return results for partial matches of the search term.
-    --stub                    Turn on response stubs for testing.
-    -V, --version             output the version number
+    --exclude <repositories>  exclude repositories by these names (comma-separated)
+    --json                    output results as json (default output is a table)
+    --owner <owner>           owner or organization to search
+    --partial-matches         return results for partial matches of the search term
+    --search-term <term>      search term
+    --stub                    turn on response stubs for testing
     -h, --help                output usage information
 ```
 
@@ -48,6 +48,7 @@ $ package-probe --help
 ```js
 import probe from 'package-probe'
 
+// Optional. Only necessary if scanning a private organization/owner.
 const accessToken = process.env.ACCESS_TOKEN
 
 const results = await probe({
@@ -64,7 +65,7 @@ console.log(results)
 Searching my Github repositories for usage of React.
 
 ```bash
-$ package-probe --access-token <my access token> --search-term react --owner ryanoglesby08
+$ package-probe --search-term react --owner ryanoglesby08
 
 ┌──────────────────────────────────┬─────────────────┬───────────────────────────────┐
 │ movie-night                      │ ^16.7.0-alpha.2 │ Tue, 20 Nov 2018 23:31:30 GMT │
