@@ -33,15 +33,15 @@ $ package-probe --help
   Usage: package-probe [options]
 
   Options:
-    --access-token <token>    Github personal access token
-    --exclude <repositories>  exclude repositories by these names (comma-separated)
-    --json                    output results as json (default output is a table)
-    --owner <owner>           owner or organization to search
-    --partial-matches         return results for partial matches of the search term
-    --search-term <term>      search term
-    --stub                    turn on response stubs for testing
-    -V, --version             output the version number
-    -h, --help                output usage information
+    --access-token <accessToken>  Github personal access token
+    --exclude <repositories>      exclude repositories by these names (comma-separated)
+    --json                        output results as json (default output is a table)
+    --owner <owner>               Github owner/organization to scan (required)
+    --partial-matches             return results for partial matches of the search term
+    --search-term <searchTerm>    search term (required)
+    --stub                        turn on response stubs for testing
+    -V, --version                 output the version number
+    -h, --help                    output usage information
 ```
 
 ## JavaScript usage

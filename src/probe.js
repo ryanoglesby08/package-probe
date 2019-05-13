@@ -72,6 +72,13 @@ const enhanceWithLastEdit = async (apiClient, owner, matchedRepos) => {
 }
 
 const probe = async ({ accessToken, exclude, owner, partialMatches, searchTerm, stub }) => {
+  if (isEmpty(searchTerm)) {
+    throw new Error('`searchTerm` is required')
+  }
+  if (isEmpty(owner)) {
+    throw new Error('`owner` is required')
+  }
+
   const apiClient = stub ? createStubClient() : createGithubClient(accessToken)
 
   const searchResults = await apiClient.searchCode(owner, searchTerm)

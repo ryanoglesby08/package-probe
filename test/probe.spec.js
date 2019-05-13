@@ -126,3 +126,17 @@ it('uses an access token if provided', async () => {
     ]
   `)
 })
+
+it('requires a search term and owner', async () => {
+  await expect(
+    probe({
+      owner: 'ryanoglesby08',
+    })
+  ).rejects.toThrowError(/searchTerm/)
+
+  await expect(
+    probe({
+      searchTerm: 'react',
+    })
+  ).rejects.toThrowError(/owner/)
+})
