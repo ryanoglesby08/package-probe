@@ -32,7 +32,12 @@ if (isEmpty(commander.owner)) {
 }
 
 const outputAsTable = (results, partialMatches) => {
-  const table = new Table()
+  if (isEmpty(results)) {
+    console.log('✨ No matches.')
+    return
+  }
+
+  const table = new Table({ head: ['Repository name', 'Version', 'Last edit'] })
   results.forEach(({ repositoryName, version, lastEdit }) => {
     table.push([
       repositoryName,
@@ -41,8 +46,8 @@ const outputAsTable = (results, partialMatches) => {
     ])
   })
 
+  console.log(`✨ Found ${results.length} matches!`)
   console.log(table.toString())
-  console.log(`Total: ${results.length}`)
 }
 
 const outputAsJson = results => {
@@ -51,6 +56,10 @@ const outputAsJson = results => {
 
 const run = async () => {
   const { accessToken, exclude, json, owner, partialMatches, searchTerm, stub } = commander
+
+  if (!json) {
+    console.log('🛰️  Scanning...')
+  }
 
   let results
   try {
