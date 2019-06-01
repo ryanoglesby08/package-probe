@@ -64,7 +64,7 @@ const run = async () => {
   let results
   try {
     results = await probe({
-      accessToken,
+      accessToken: process.env.GITHUB_TOKEN || process.env.GH_TOKEN || accessToken,
       exclude,
       owner,
       partialMatches,

@@ -17,17 +17,17 @@ $ npm install -g package-probe
 
 ## Set up (one time)
 
-Package Probe uses the Github API to scan for a package. If you want to search in a private Github organization, you'll need to create a Github Personal Access Token that has access to your organization and pass it to `package-probe` on each scan.
+Package Probe uses the Github API to scan for a package. If you want to search in a private Github organization, you'll need to create a Github Personal Access Token that has access to your organization and set it as an environment variable when running `package-probe`.
 
 If you are scanning public organizations/owners, you can skip this step.
 
 - Generate a [Github Personal access token](https://github.com/settings/tokens) in your Github profile developer settings
 - Grant the `repo` scope to the token (_Package Probe reads information and does not store any of your data_)
-- Copy the token! You will pass it as a parameter to Package Probe. (If you forget your token you can re-generate it)
+- Add it to your environment as `GITHUB_TOKEN` or `GH_TOKEN`. (e.g. `export GITHUB_TOKEN=<your token>`)
 
 ## Command line usage
 
-```
+```bash
 $ package-probe --help
 
   Usage: package-probe [options]
@@ -44,13 +44,15 @@ $ package-probe --help
     -h, --help                    output usage information
 ```
 
+Package probe will automatically use a Github Personal Access Token defined in the `GITHUB_TOKEN` or `GH_TOKEN` environment variable.
+
 ## JavaScript usage
 
 ```js
 import probe from 'package-probe'
 
 // Optional. Only necessary if scanning a private organization/owner.
-const accessToken = process.env.ACCESS_TOKEN
+const accessToken = process.env.GITHUB_TOKEN
 
 const results = await probe({
   accessToken,
