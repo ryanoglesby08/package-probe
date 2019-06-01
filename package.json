@@ -32,7 +32,7 @@
     "semantic-release": "semantic-release"
   },
   "dependencies": {
-    "@octokit/rest": "^16.25.0",
+    "@octokit/rest": "^16.27.3",
     "cli-table": "^0.3.1",
     "commander": "^2.9.0",
     "lodash": "^4.17.5",
