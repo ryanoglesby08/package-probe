@@ -1,7 +1,6 @@
 import isEmpty from 'lodash/isEmpty'
 
-import createStubClient from './apiClient/stubClient'
-import createGithubClient from './apiClient/githubClient'
+import GithubApiClient from './githubApiClient'
 
 const fetchDependencyVersion = async (
   apiClient,
@@ -71,7 +70,7 @@ const enhanceWithLastEdit = async (apiClient, owner, matchedRepos) => {
   )
 }
 
-const probe = async ({ accessToken, exclude, owner, partialMatches, searchTerm, stub }) => {
+const probe = async ({ accessToken, exclude, owner, partialMatches, searchTerm }) => {
   if (isEmpty(searchTerm)) {
     throw new Error('`searchTerm` is required')
   }
@@ -79,7 +78,7 @@ const probe = async ({ accessToken, exclude, owner, partialMatches, searchTerm, 
     throw new Error('`owner` is required')
   }
 
-  const apiClient = stub ? createStubClient() : createGithubClient(accessToken)
+  const apiClient = new GithubApiClient(accessToken)
 
   const searchResults = await apiClient.searchCode(owner, searchTerm)
   const matchedRepos = await matchResults(

@@ -14,7 +14,6 @@ commander
   .option('--owner <owner>', 'Github owner/organization to scan (required)')
   .option('--partial-matches', 'return results for partial matches of the search term', false)
   .option('--search-term <searchTerm>', 'search term (required)')
-  .option('--stub', 'turn on response stubs for testing', false)
 
 commander.version(packageVersion).parse(process.argv)
 
@@ -55,7 +54,7 @@ const outputAsJson = results => {
 }
 
 const run = async () => {
-  const { accessToken, exclude, json, owner, partialMatches, searchTerm, stub } = commander
+  const { accessToken, exclude, json, owner, partialMatches, searchTerm } = commander
 
   if (!json) {
     console.log('🛰️  Scanning...')
@@ -69,7 +68,6 @@ const run = async () => {
       owner,
       partialMatches,
       searchTerm,
-      stub,
     })
   } catch (e) {
     console.error(e)

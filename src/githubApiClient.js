@@ -2,10 +2,12 @@ import Octokit from '@octokit/rest'
 import fetch from 'node-fetch'
 import { URL } from 'url'
 
-class Client {
-  constructor(octokit, token) {
-    this.octokit = octokit
-    this.token = token
+class GithubApiClient {
+  constructor(githubAccessToken) {
+    this.octokit = new Octokit({
+      auth: githubAccessToken,
+    })
+    this.token = githubAccessToken
   }
 
   async searchCode(owner, searchTerm) {
@@ -28,10 +30,11 @@ class Client {
     }
 
     // Use the raw.githubusercontent.com web url to avoid rate limiting
-    return fetch(`https://raw.githubusercontent.com/${repo}/${ref}/${path}`, {
+    const response = await fetch(`https://raw.githubusercontent.com/${repo}/${ref}/${path}`, {
       method: 'GET',
       headers,
-    }).then(res => res.json())
+    })
+    return response.json()
   }
 
   async getRepo(owner, repo) {
@@ -39,12 +42,4 @@ class Client {
   }
 }
 
-const createClient = token => {
-  const octokit = new Octokit({
-    auth: token,
-  })
-
-  return new Client(octokit, token)
-}
-
-export default createClient
+export default GithubApiClient
