@@ -8,7 +8,6 @@ import probe from './probe'
 import { version as packageVersion } from '../package.json'
 
 commander
-  .option('--access-token <accessToken>', 'Github personal access token')
   .option('--exclude <repositories>', 'exclude repositories by these names (comma-separated)')
   .option('--json', 'output results as json (default output is a table)', false)
   .option('--owner <owner>', 'Github owner/organization to scan (required)')
@@ -54,7 +53,7 @@ const outputAsJson = results => {
 }
 
 const run = async () => {
-  const { accessToken, exclude, json, owner, partialMatches, searchTerm } = commander
+  const { exclude, json, owner, partialMatches, searchTerm } = commander
 
   if (!json) {
     console.log('🛰️  Scanning...')
@@ -63,7 +62,7 @@ const run = async () => {
   let results
   try {
     results = await probe({
-      accessToken: process.env.GITHUB_TOKEN || process.env.GH_TOKEN || accessToken,
+      accessToken: process.env.GITHUB_TOKEN || process.env.GH_TOKEN,
       exclude,
       owner,
       partialMatches,
