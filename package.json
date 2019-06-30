@@ -23,8 +23,8 @@
     "bin"
   ],
   "scripts": {
-    "build": "rm -rf bin && babel ./src -d bin",
-    "build:watch": "babel ./src -d bin --watch",
+    "build": "rm -rf bin && tsc",
+    "build:watch": "tsc --watch",
     "commit": "git-cz",
     "prepublishOnly": "npm run build",
     "test": "jest",
@@ -33,6 +33,10 @@
   },
   "dependencies": {
     "@octokit/rest": "^16.27.3",
+    "@types/cli-table": "^0.3.0",
+    "@types/jest": "^24.0.15",
+    "@types/lodash": "^4.14.135",
+    "@types/node-fetch": "^2.3.7",
     "cli-table": "^0.3.1",
     "commander": "^2.9.0",
     "lodash": "^4.17.5",
@@ -42,6 +46,7 @@
     "@babel/cli": "^7.4.4",
     "@babel/core": "^7.4.4",
     "@babel/preset-env": "^7.4.4",
+    "@babel/preset-typescript": "^7.3.3",
     "@pollyjs/adapter-fetch": "^2.4.0",
     "@pollyjs/adapter-node-http": "^2.4.0",
     "@pollyjs/core": "^2.4.0",
@@ -54,7 +59,8 @@
     "prettier": "^1.11.1",
     "pretty-quick": "^1.4.1",
     "semantic-release": "^15.13.13",
-    "setup-polly-jest": "^0.5.2"
+    "setup-polly-jest": "^0.5.2",
+    "typescript": "^3.5.2"
   },
   "config": {
     "commitizen": {

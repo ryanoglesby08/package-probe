@@ -2,9 +2,10 @@
 
 import commander from 'commander'
 import Table from 'cli-table'
-import isEmpty from 'lodash/isEmpty'
+import { isEmpty } from 'lodash'
 
-import probe from './probe'
+import probe, { EnhancedMatchResult } from './probe'
+// @ts-ignore
 import { version as packageVersion } from '../package.json'
 
 commander
@@ -29,7 +30,7 @@ if (isEmpty(commander.owner)) {
   process.exit(1)
 }
 
-const outputAsTable = (results, partialMatches) => {
+const outputAsTable = (results: EnhancedMatchResult[], partialMatches: boolean): void => {
   if (isEmpty(results)) {
     console.log('✨ No matches.')
     return
@@ -48,18 +49,18 @@ const outputAsTable = (results, partialMatches) => {
   console.log(table.toString())
 }
 
-const outputAsJson = results => {
+const outputAsJson = (results: EnhancedMatchResult[]): void => {
   console.log(JSON.stringify(results))
 }
 
-const run = async () => {
+const run = async (): Promise<void> => {
   const { exclude, json, owner, partialMatches, searchTerm } = commander
 
   if (!json) {
     console.log('🛰️  Scanning...')
   }
 
-  let results
+  let results: EnhancedMatchResult[] = []
   try {
     results = await probe({
       accessToken: process.env.GITHUB_TOKEN || process.env.GH_TOKEN,
