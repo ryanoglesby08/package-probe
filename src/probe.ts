@@ -1,4 +1,5 @@
 import { isEmpty } from 'lodash'
+import Octokit from '@octokit/rest'
 
 import GithubApiClient, {
   SearchCodeResult,
@@ -78,32 +79,47 @@ const matchResults = async (
   return matches
 }
 
-const enhanceWithLastEdit = async (
+const createFinalResults = async (
   apiClient: GithubApiClient,
   owner: string,
-  matchedRepos: MatchResult[]
+  matchedRepos: MatchResult[],
+  include: RepoFilterFunction[]
 ): Promise<EnhancedMatchResult[]> => {
-  return await Promise.all(
-    matchedRepos.map(async matchResult => {
-      const repoInfo = await apiClient.getRepo(owner, matchResult.repositoryName)
-      const lastEdit: string | undefined = repoInfo.headers['last-modified']
+  let finalResults: EnhancedMatchResult[] = []
 
-      return {
-        ...matchResult,
-        lastEdit,
-      }
-    })
-  )
+  for (const repo of matchedRepos) {
+    const repoInfo = await apiClient.getRepo(owner, repo.repositoryName)
+    const shouldInclude = include.every(filter => filter(repoInfo.data))
+
+    if (shouldInclude) {
+      finalResults.push({
+        ...repo,
+        lastEdit: repoInfo.headers['last-modified'],
+      })
+    }
+  }
+
+  return finalResults
 }
 
-interface ProbeParams {
+type RepoFilterFunction = (githubRepo: Octokit.ReposGetResponse) => boolean
+
+interface ProbeOptions {
   accessToken?: string
+  include?: RepoFilterFunction[]
   exclude?: string // comma-separated
   owner?: string
   partialMatches?: boolean
   searchTerm?: string
 }
-const probe = async ({ accessToken, exclude, owner, partialMatches, searchTerm }: ProbeParams) => {
+const probe = async ({
+  accessToken,
+  exclude,
+  include = [],
+  owner,
+  partialMatches,
+  searchTerm,
+}: ProbeOptions) => {
   if (typeof searchTerm === 'undefined' || isEmpty(searchTerm)) {
     throw new Error('`searchTerm` is required')
   }
@@ -127,7 +143,7 @@ const probe = async ({ accessToken, exclude, owner, partialMatches, searchTerm }
     searchCodeResultsWithoutExcludedRepos
   )
 
-  return await enhanceWithLastEdit(apiClient, owner, matchedRepos)
+  return await createFinalResults(apiClient, owner, matchedRepos, include)
 }
 
 export default probe

@@ -44,7 +44,13 @@ $ package-probe --help
 
 Package probe will automatically use a Github Personal Access Token defined in the `GITHUB_TOKEN` or `GH_TOKEN` environment variable.
 
-## JavaScript usage
+## Advanced usage
+
+While the CLI provides quick use, you have more control through the advanced options available in the JavaScript interface.
+
+### Example
+
+Basic search.
 
 ```js
 import probe from 'package-probe'
@@ -61,7 +67,32 @@ const results = await probe({
 console.log(results)
 ```
 
-## Example
+### JavaScript API
+
+`probe(options)`
+
+```js
+// options
+{
+  // Github Personal Access Token. Only necessary if scanning a private organization/owner.
+  accessToken?: string
+  // Only return results that match ALL the provided filter functions
+  include?: RepoFilterFunction[]
+  // Don't search repositories matching this comma-separated list of names. Must be the full name, including the owner. (e.g owner/repository-name)
+  exclude?: string
+  // The Github owner or organization to search in
+  owner?: string
+  // If true, will match packages that partially match the provided search term. Otherwise, only exact matches will be returned. This option can be used to search for multiple packages that follow a naming schema.
+  partialMatches?: boolean
+  // The package name to search for. Must be the full name of the package, including the owner, unless you use the `partialMatches` option.
+  searchTerm?: string
+}
+
+// See Github REST API documentation (https://developer.github.com/v3/repos/#get) for available fields
+type RepoFilterFunction = (githubRepo: Octokit.ReposGetResponse) => boolean
+```
+
+## Example CLI search resulsts
 
 Searching my Github repositories for usage of React.
 
