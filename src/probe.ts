@@ -37,21 +37,6 @@ const fetchDependencyVersion = async (
   return versionMatches
 }
 
-const excludeRepos = (
-  searchCodeResults: SearchCodeResult[],
-  exclude: string | undefined
-): SearchCodeResult[] => {
-  if (typeof exclude === 'undefined' || isEmpty(exclude)) {
-    return searchCodeResults
-  }
-
-  const excludedRepos = exclude.split(',')
-
-  return searchCodeResults.filter(
-    repository => !excludedRepos.includes(repository.repository.full_name)
-  )
-}
-
 const matchResults = async (
   apiClient: GithubApiClient,
   searchTerm: string,
@@ -83,15 +68,18 @@ const createFinalResults = async (
   apiClient: GithubApiClient,
   owner: string,
   matchedRepos: MatchResult[],
-  include: RepoFilterFunction[]
+  include: RepoFilterFunction[],
+  exclude: RepoFilterFunction[]
 ): Promise<EnhancedMatchResult[]> => {
   let finalResults: EnhancedMatchResult[] = []
 
   for (const repo of matchedRepos) {
     const repoInfo = await apiClient.getRepo(owner, repo.repositoryName)
-    const shouldInclude = include.every(filter => filter(repoInfo.data))
 
-    if (shouldInclude) {
+    const shouldInclude = include.every(filter => filter(repoInfo.data))
+    const shouldExclude = exclude.some(filter => filter(repoInfo.data))
+
+    if (!shouldExclude && shouldInclude) {
       finalResults.push({
         ...repo,
         lastEdit: repoInfo.headers['last-modified'],
@@ -106,15 +94,15 @@ type RepoFilterFunction = (githubRepo: Octokit.ReposGetResponse) => boolean
 
 interface ProbeOptions {
   accessToken?: string
+  exclude?: RepoFilterFunction[]
   include?: RepoFilterFunction[]
-  exclude?: string // comma-separated
   owner?: string
   partialMatches?: boolean
   searchTerm?: string
 }
 const probe = async ({
   accessToken,
-  exclude,
+  exclude = [],
   include = [],
   owner,
   partialMatches,
@@ -132,18 +120,14 @@ const probe = async ({
   const collectMatches: MatcherFunction = partialMatches ? partialMatcher : exactMatcher
 
   const searchCodeResults: SearchCodeResult[] = await apiClient.searchCode(owner, searchTerm)
-  const searchCodeResultsWithoutExcludedRepos: SearchCodeResult[] = excludeRepos(
-    searchCodeResults,
-    exclude
-  )
   const matchedRepos: MatchResult[] = await matchResults(
     apiClient,
     searchTerm,
     collectMatches,
-    searchCodeResultsWithoutExcludedRepos
+    searchCodeResults
   )
 
-  return await createFinalResults(apiClient, owner, matchedRepos, include)
+  return await createFinalResults(apiClient, owner, matchedRepos, include, exclude)
 }
 
 export default probe

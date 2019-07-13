@@ -33,7 +33,6 @@ $ package-probe --help
   Usage: package-probe [options]
 
   Options:
-    --exclude <repositories>      exclude repositories by these names (comma-separated)
     --json                        output results as json (default output is a table)
     --owner <owner>               Github owner/organization to scan (required)
     --partial-matches             return results for partial matches of the search term
@@ -75,17 +74,17 @@ console.log(results)
 // options
 {
   // Github Personal Access Token. Only necessary if scanning a private organization/owner.
-  accessToken?: string
+  accessToken?: string,
+  // Don't return results that match ANY of the provided filter functions
+  exclude?: RepoFilterFunction[]
   // Only return results that match ALL the provided filter functions
-  include?: RepoFilterFunction[]
-  // Don't search repositories matching this comma-separated list of names. Must be the full name, including the owner. (e.g owner/repository-name)
-  exclude?: string
+  include?: RepoFilterFunction[],
   // The Github owner or organization to search in
-  owner?: string
-  // If true, will match packages that partially match the provided search term. Otherwise, only exact matches will be returned. This option can be used to search for multiple packages that follow a naming schema.
-  partialMatches?: boolean
-  // The package name to search for. Must be the full name of the package, including the owner, unless you use the `partialMatches` option.
-  searchTerm?: string
+  owner: string,
+  // Required. If true, will match packages that partially match the provided search term. Otherwise, only exact matches will be returned. This option can be used to search for multiple packages that follow a naming schema.
+  partialMatches?: boolean,
+  // Required. The package name to search for. Must be the full name of the package, including the owner, unless you use the `partialMatches` option.
+  searchTerm: string
 }
 
 // See Github REST API documentation (https://developer.github.com/v3/repos/#get) for available fields

@@ -9,7 +9,6 @@ import probe, { EnhancedMatchResult } from './probe'
 import { version as packageVersion } from '../package.json'
 
 commander
-  .option('--exclude <repositories>', 'exclude repositories by these names (comma-separated)')
   .option('--json', 'output results as json (default output is a table)', false)
   .option('--owner <owner>', 'Github owner/organization to scan (required)')
   .option('--partial-matches', 'return results for partial matches of the search term', false)
@@ -54,7 +53,7 @@ const outputAsJson = (results: EnhancedMatchResult[]): void => {
 }
 
 const run = async (): Promise<void> => {
-  const { exclude, json, owner, partialMatches, searchTerm } = commander
+  const { json, owner, partialMatches, searchTerm } = commander
 
   if (!json) {
     console.log('🛰️  Scanning...')
@@ -64,7 +63,6 @@ const run = async (): Promise<void> => {
   try {
     results = await probe({
       accessToken: process.env.GITHUB_TOKEN || process.env.GH_TOKEN,
-      exclude,
       owner,
       partialMatches,
       searchTerm,
