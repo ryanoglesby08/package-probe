@@ -98,15 +98,13 @@ console.log(results)
 #### Exclude archived repositories
 
 ```ts
-const notArchived = (githubRepo: Octokit.ReposGetResponse) => {
-  return new Date(githubRepo.archived)
-}
+const isArchived = (githubRepo: Octokit.ReposGetResponse) => githubRepo.archived
 
 const results = await probe({
   accessToken: '...',
   owner: 'my-company',
   searchTerm: '@my-company/my-package',
-  exclude: [notArchived],
+  exclude: [isArchived],
 })
 ```
 
