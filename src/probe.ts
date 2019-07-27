@@ -8,12 +8,9 @@ import GithubApiClient, {
 } from './githubApiClient'
 import { exactMatcher, partialMatcher, MatcherFunction } from './matchers'
 
-interface MatchResult {
+export interface MatchResult {
   repositoryName: string
   version: string | PackageJsonDependencies
-}
-export interface EnhancedMatchResult extends MatchResult {
-  lastEdit: string | undefined
 }
 
 const fetchDependencyVersion = async (
@@ -69,9 +66,10 @@ const createFinalResults = async (
   owner: string,
   matchedRepos: MatchResult[],
   include: RepoFilterFunction[],
-  exclude: RepoFilterFunction[]
-): Promise<EnhancedMatchResult[]> => {
-  let finalResults: EnhancedMatchResult[] = []
+  exclude: RepoFilterFunction[],
+  appendFieldsToOutput: AppendFieldsToOutputFunction | undefined
+): Promise<MatchResult[]> => {
+  let finalResults: MatchResult[] = []
 
   for (const repo of matchedRepos) {
     const repoInfo = await apiClient.getRepo(owner, repo.repositoryName)
@@ -80,9 +78,11 @@ const createFinalResults = async (
     const shouldExclude = exclude.some(filter => filter(repoInfo.data))
 
     if (!shouldExclude && shouldInclude) {
+      const additionalFields = appendFieldsToOutput ? appendFieldsToOutput(repoInfo.data) : {}
+
       finalResults.push({
         ...repo,
-        lastEdit: repoInfo.headers['last-modified'],
+        ...additionalFields,
       })
     }
   }
@@ -90,10 +90,14 @@ const createFinalResults = async (
   return finalResults
 }
 
+type AppendFieldsToOutputFunction = (
+  githubRepo: Octokit.ReposGetResponse
+) => { [fieldName: string]: any }
 type RepoFilterFunction = (githubRepo: Octokit.ReposGetResponse) => boolean
 
 interface ProbeOptions {
   accessToken?: string
+  appendFieldsToOutput?: AppendFieldsToOutputFunction
   exclude?: RepoFilterFunction[]
   include?: RepoFilterFunction[]
   owner?: string
@@ -102,12 +106,13 @@ interface ProbeOptions {
 }
 const probe = async ({
   accessToken,
+  appendFieldsToOutput,
   exclude = [],
   include = [],
   owner,
   partialMatches,
   searchTerm,
-}: ProbeOptions) => {
+}: ProbeOptions): Promise<MatchResult[]> => {
   if (typeof searchTerm === 'undefined' || isEmpty(searchTerm)) {
     throw new Error('`searchTerm` is required')
   }
@@ -127,7 +132,14 @@ const probe = async ({
     searchCodeResults
   )
 
-  return await createFinalResults(apiClient, owner, matchedRepos, include, exclude)
+  return await createFinalResults(
+    apiClient,
+    owner,
+    matchedRepos,
+    include,
+    exclude,
+    appendFieldsToOutput
+  )
 }
 
 export default probe

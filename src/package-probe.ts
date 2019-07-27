@@ -4,7 +4,7 @@ import commander from 'commander'
 import Table from 'cli-table'
 import { isEmpty } from 'lodash'
 
-import probe, { EnhancedMatchResult } from './probe'
+import probe, { MatchResult } from './probe'
 // @ts-ignore
 import { version as packageVersion } from '../package.json'
 
@@ -29,26 +29,24 @@ if (isEmpty(commander.owner)) {
   process.exit(1)
 }
 
-const outputAsTable = (results: EnhancedMatchResult[], partialMatches: boolean): void => {
+const outputAsTable = (results: MatchResult[], partialMatches: boolean): void => {
   if (isEmpty(results)) {
     console.log('✨ No matches.')
     return
   }
 
-  const table = new Table({ head: ['Repository name', 'Version', 'Last edit'] })
-  results.forEach(({ repositoryName, version, lastEdit }) => {
-    table.push([
-      repositoryName,
-      partialMatches ? JSON.stringify(version, null, ' ') : version,
-      lastEdit,
-    ])
+  const table = new Table({ head: ['Repository name', 'Version'] })
+  results.forEach(({ repositoryName, version }) => {
+    const versionOutput = partialMatches ? JSON.stringify(version, null, ' ') : version
+
+    table.push([repositoryName, versionOutput])
   })
 
   console.log(`✨ Found ${results.length} matches!`)
   console.log(table.toString())
 }
 
-const outputAsJson = (results: EnhancedMatchResult[]): void => {
+const outputAsJson = (results: MatchResult[]): void => {
   console.log(JSON.stringify(results))
 }
 
@@ -59,7 +57,7 @@ const run = async (): Promise<void> => {
     console.log('🛰️  Scanning...')
   }
 
-  let results: EnhancedMatchResult[] = []
+  let results: MatchResult[] = []
   try {
     results = await probe({
       accessToken: process.env.GITHUB_TOKEN || process.env.GH_TOKEN,
