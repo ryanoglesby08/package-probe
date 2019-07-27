@@ -47,30 +47,11 @@ Package probe will automatically use a Github Personal Access Token defined in t
 
 While the CLI provides quick use, you have more control through the advanced options available in the JavaScript interface.
 
-### Example
-
-Basic search.
-
-```js
-import probe from 'package-probe'
-
-// Optional. Only necessary if scanning a private organization/owner.
-const accessToken = process.env.GITHUB_TOKEN
-
-const results = await probe({
-  accessToken,
-  owner: 'ryanoglesby08',
-  searchTerm: 'react',
-})
-
-console.log(results)
-```
-
 ### JavaScript API
 
 `probe(options)`
 
-```js
+```ts
 // options
 {
   // Github Personal Access Token. Only necessary if scanning a private organization/owner.
@@ -94,6 +75,55 @@ type RepoFilterFunction = (githubRepo: Octokit.ReposGetResponse) => boolean
 
 // See Github REST API documentation (https://developer.github.com/v3/repos/#get) for available fields
 type AppendFieldsToOutputFunction = (githubRepo: Octokit.ReposGetResponse) => { [fieldName: string]: any }
+```
+
+### Recipes
+
+#### Scan for an private package
+
+```ts
+import probe from 'package-probe'
+
+const accessToken = process.env.GITHUB_TOKEN
+
+const results = await probe({
+  accessToken,
+  owner: 'my-company',
+  searchTerm: '@my-company/my-package',
+})
+
+console.log(results)
+```
+
+#### Exclude archived repositories
+
+```ts
+const notArchived = (githubRepo: Octokit.ReposGetResponse) => {
+  return new Date(githubRepo.archived)
+}
+
+const results = await probe({
+  accessToken: '...',
+  owner: 'my-company',
+  searchTerm: '@my-company/my-package',
+  exclude: [notArchived],
+})
+```
+
+#### Add the last commit and description to the output
+
+```ts
+const appendFieldsToOutput = (githubRepo: Octokit.ReposGetResponse) => ({
+  description: githubRepo.description,
+  lastCommit: new Date(githubRepo.pushed_at).toLocaleDateString(),
+})
+
+const results = await probe({
+  accessToken: '...',
+  owner: 'my-company',
+  searchTerm: '@my-company/my-package',
+  appendFieldsToOutput,
+})
 ```
 
 ## Example CLI search results
