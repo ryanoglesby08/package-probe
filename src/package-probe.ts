@@ -35,11 +35,11 @@ const outputAsTable = (results: MatchResult[], partialMatches: boolean): void =>
     return
   }
 
-  const table = new Table({ head: ['Repository name', 'Version'] })
-  results.forEach(({ repositoryName, version }) => {
+  const table = new Table({ head: ['Repository name', 'Package/app name', 'Version'] })
+  results.forEach(({ repositoryName, packageName, version }) => {
     const versionOutput = partialMatches ? JSON.stringify(version, null, ' ') : version
 
-    table.push([repositoryName, versionOutput])
+    table.push([repositoryName, packageName, versionOutput])
   })
 
   console.log(`✨ Found ${results.length} matches!`)

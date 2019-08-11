@@ -36,10 +36,12 @@ it('finds versions of a package', async () => {
   expect(results).toMatchInlineSnapshot(`
     Array [
       Object {
+        "packageName": "my-cli",
         "repositoryName": "my-cli",
         "version": "^2.14.1",
       },
       Object {
+        "packageName": "package-probe",
         "repositoryName": "package-probe",
         "version": "^2.9.0",
       },
@@ -57,6 +59,7 @@ it('handles partial matches', async () => {
   expect(results).toMatchInlineSnapshot(`
     Array [
       Object {
+        "packageName": "@the-eod-machine/ui",
         "repositoryName": "the-eod-machine",
         "version": Object {
           "emotion": "^9.2.6",
@@ -66,6 +69,7 @@ it('handles partial matches', async () => {
         },
       },
       Object {
+        "packageName": "ryan-oglesby-blog",
         "repositoryName": "ryanoglesby08.github.com",
         "version": Object {
           "babel-plugin-emotion": "^9.1.2",
@@ -90,6 +94,7 @@ it('filters out partial matches that end up being empty', async () => {
   expect(results).toMatchInlineSnapshot(`
     Array [
       Object {
+        "packageName": "react-bare-app",
         "repositoryName": "react-dashboard",
         "version": Object {
           "babel-eslint": "^7.2.3",
@@ -99,6 +104,7 @@ it('filters out partial matches that end up being empty', async () => {
         },
       },
       Object {
+        "packageName": "@the-eod-machine/emailer",
         "repositoryName": "the-eod-machine",
         "version": Object {
           "eslint": "^5.9.0",
@@ -107,6 +113,7 @@ it('filters out partial matches that end up being empty', async () => {
         },
       },
       Object {
+        "packageName": "@the-eod-machine/api",
         "repositoryName": "the-eod-machine",
         "version": Object {
           "eslint": "^5.9.0",
@@ -114,6 +121,7 @@ it('filters out partial matches that end up being empty', async () => {
         },
       },
       Object {
+        "packageName": "react-quizzer",
         "repositoryName": "react-quizzer",
         "version": Object {
           "eslint": "^2.13.1",
@@ -122,6 +130,7 @@ it('filters out partial matches that end up being empty', async () => {
         },
       },
       Object {
+        "packageName": "splitit",
         "repositoryName": "splitit",
         "version": Object {
           "eslint": "^3.6.0",
@@ -130,6 +139,7 @@ it('filters out partial matches that end up being empty', async () => {
         },
       },
       Object {
+        "packageName": "ryan-oglesby-blog",
         "repositoryName": "ryanoglesby08.github.com",
         "version": Object {
           "eslint": "^4.19.1",
@@ -138,6 +148,7 @@ it('filters out partial matches that end up being empty', async () => {
         },
       },
       Object {
+        "packageName": "react-bare-app",
         "repositoryName": "react-bare-app",
         "version": Object {
           "eslint": "^3.19.0",
@@ -146,12 +157,14 @@ it('filters out partial matches that end up being empty', async () => {
         },
       },
       Object {
+        "packageName": "@the-eod-machine/ui",
         "repositoryName": "the-eod-machine",
         "version": Object {
           "eslint-plugin-graphql": "^3.0.1",
         },
       },
       Object {
+        "packageName": "xhr-env-provider",
         "repositoryName": "xhr-env-provider",
         "version": Object {
           "eslint": "^3.9.0",
@@ -177,10 +190,12 @@ it('uses an access token if provided', async () => {
   expect(results).toMatchInlineSnapshot(`
     Array [
       Object {
+        "packageName": "my-cli",
         "repositoryName": "my-cli",
         "version": "^2.14.1",
       },
       Object {
+        "packageName": "package-probe",
         "repositoryName": "package-probe",
         "version": "^2.9.0",
       },
@@ -211,6 +226,7 @@ it('finds matches in dev dependencies', async () => {
   expect(results).toMatchInlineSnapshot(`
     Array [
       Object {
+        "packageName": undefined,
         "repositoryName": "ng-inspect-watchers",
         "version": "^1.4.3",
       },
@@ -226,6 +242,7 @@ it('finds matches in dev dependencies', async () => {
   expect(results).toMatchInlineSnapshot(`
     Array [
       Object {
+        "packageName": undefined,
         "repositoryName": "ng-inspect-watchers",
         "version": Object {
           "grunt": "~0.4.5",
@@ -235,6 +252,7 @@ it('finds matches in dev dependencies', async () => {
         },
       },
       Object {
+        "packageName": "jquery-ui",
         "repositoryName": "L8-travis-build-monitor",
         "version": Object {
           "grunt": "0.4.1",
@@ -270,10 +288,12 @@ it('can filter on repository properties, only returning results that satisfy all
   expect(results).toMatchInlineSnapshot(`
     Array [
       Object {
+        "packageName": "exposing-css-hidden-complexities",
         "repositoryName": "exposing-css-hidden-complexities",
         "version": "^16.1.1",
       },
       Object {
+        "packageName": "js-hide-instead-of-by-class",
         "repositoryName": "css-playground",
         "version": "^15.4.2",
       },
@@ -298,14 +318,17 @@ it('can filter on repository properties, excluding results that satisfy ANY "exc
   expect(results).toMatchInlineSnapshot(`
     Array [
       Object {
+        "packageName": "movie-night",
         "repositoryName": "movie-night",
         "version": "^16.7.0-alpha.2",
       },
       Object {
+        "packageName": "email-autocomplete",
         "repositoryName": "email-autocomplete",
         "version": "^16.5.2",
       },
       Object {
+        "packageName": "ssr-media-queries",
         "repositoryName": "ssr-media-queries",
         "version": "^16.2.0",
       },
@@ -330,8 +353,49 @@ it('can customize the output', async () => {
       Object {
         "description": "A Chrome Extension to inspect the watchers in an Angular app",
         "lastCommit": "6/22/2016",
+        "packageName": undefined,
         "repositoryName": "ng-inspect-watchers",
         "version": "^1.4.3",
+      },
+    ]
+  `)
+})
+
+it('shows the package/app name in addition to the repo name', async () => {
+  // to better support monorepos
+
+  const results = await probe({
+    owner: 'ryanoglesby08',
+    searchTerm: 'apollo',
+    partialMatches: true,
+  })
+
+  expect(results).toMatchInlineSnapshot(`
+    Array [
+      Object {
+        "packageName": "@the-eod-machine/emailer",
+        "repositoryName": "the-eod-machine",
+        "version": Object {
+          "apollo-cache-inmemory": "^1.2.5",
+          "apollo-client": "^2.3.5",
+          "apollo-link-http": "^1.5.4",
+        },
+      },
+      Object {
+        "packageName": "@the-eod-machine/api",
+        "repositoryName": "the-eod-machine",
+        "version": Object {
+          "apollo-server": "^2.2.2",
+          "apollo-server-testing": "^2.2.2",
+        },
+      },
+      Object {
+        "packageName": "@the-eod-machine/ui",
+        "repositoryName": "the-eod-machine",
+        "version": Object {
+          "apollo-boost": "^0.1.10",
+          "react-apollo": "^2.1.6",
+        },
       },
     ]
   `)

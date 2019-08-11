@@ -10,28 +10,8 @@ import { exactMatcher, partialMatcher, MatcherFunction } from './matchers'
 
 export interface MatchResult {
   repositoryName: string
+  packageName: string
   version: string | PackageJsonDependencies
-}
-
-const fetchDependencyVersion = async (
-  apiClient: GithubApiClient,
-  searchTerm: string,
-  collectMatches: MatcherFunction,
-  searchCodeResult: SearchCodeResult
-): Promise<string | undefined | PackageJsonDependencies> => {
-  const packageJson: PackageJson = await apiClient.getContents(
-    searchCodeResult.repository.full_name,
-    searchCodeResult.url,
-    searchCodeResult.path
-  )
-
-  const versionMatches = collectMatches(
-    packageJson.dependencies,
-    packageJson.devDependencies,
-    searchTerm
-  )
-
-  return versionMatches
 }
 
 const matchResults = async (
@@ -43,16 +23,22 @@ const matchResults = async (
   let matches: MatchResult[] = []
 
   for (const searchCodeResult of searchCodeResults) {
-    const version = await fetchDependencyVersion(
-      apiClient,
-      searchTerm,
-      collectMatches,
-      searchCodeResult
+    const packageJson: PackageJson = await apiClient.getContents(
+      searchCodeResult.repository.full_name,
+      searchCodeResult.url,
+      searchCodeResult.path
+    )
+
+    const version = collectMatches(
+      packageJson.dependencies,
+      packageJson.devDependencies,
+      searchTerm
     )
 
     if (version && !isEmpty(version)) {
       matches.push({
         repositoryName: searchCodeResult.repository.name,
+        packageName: packageJson.name,
         version,
       })
     }

@@ -16,6 +16,7 @@ export interface PackageJsonDependencies {
   [packageName: string]: string
 }
 export interface PackageJson {
+  name: string
   dependencies: PackageJsonDependencies
   devDependencies: PackageJsonDependencies
 }
