@@ -50,7 +50,7 @@ const matchResults = async (
       searchCodeResult
     )
 
-    if (version) {
+    if (version && !isEmpty(version)) {
       matches.push({
         repositoryName: searchCodeResult.repository.name,
         version,
