@@ -35,7 +35,7 @@
     "@octokit/rest": "^16.27.3",
     "@types/cli-table": "^0.3.0",
     "@types/jest": "^24.0.15",
-    "@types/lodash": "^4.14.135",
+    "@types/lodash": "^4.14.137",
     "@types/node-fetch": "^2.3.7",
     "cli-table": "^0.3.1",
     "commander": "^3.0.0",
