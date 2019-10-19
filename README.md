@@ -52,8 +52,7 @@ While the CLI provides quick use, you have more control through the advanced opt
 `probe(options)`
 
 ```ts
-// options
-{
+type Options = {
   // Github Personal Access Token. Only necessary if scanning a private organization/owner.
   accessToken?: string,
   // Function that adds fields to return along with the repository name and matched version
