@@ -50,7 +50,7 @@
     "@pollyjs/adapter-fetch": "^2.4.0",
     "@pollyjs/adapter-node-http": "^2.4.0",
     "@pollyjs/core": "^2.4.0",
-    "@pollyjs/persister-fs": "^2.1.0",
+    "@pollyjs/persister-fs": "^3.0.0",
     "babel-jest": "^24.7.1",
     "commitizen": "^4.0.0",
     "cz-conventional-changelog": "^3.0.2",
