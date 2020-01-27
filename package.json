@@ -58,7 +58,7 @@
     "jest": "^24.7.1",
     "prettier": "^1.11.1",
     "pretty-quick": "^2.0.0",
-    "semantic-release": "^15.13.13",
+    "semantic-release": "^17.0.0",
     "setup-polly-jest": "^0.6.0",
     "typescript": "^3.5.2"
   },
