@@ -49,7 +49,7 @@
     "@babel/preset-typescript": "^7.3.3",
     "@pollyjs/adapter-fetch": "^4.0.0",
     "@pollyjs/adapter-node-http": "^2.4.0",
-    "@pollyjs/persister-fs": "^4.0.0",
+    "@pollyjs/persister-fs": "^4.0.2",
     "@pollyjs/core": "^4.0.0",
     "babel-jest": "^24.7.1",
     "commitizen": "^4.0.0",
