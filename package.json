@@ -46,7 +46,7 @@
     "@babel/cli": "^7.8.4",
     "@babel/core": "^7.8.4",
     "@babel/preset-env": "^7.8.4",
-    "@babel/preset-typescript": "^7.3.3",
+    "@babel/preset-typescript": "^7.8.3",
     "@pollyjs/adapter-fetch": "^4.0.0",
     "@pollyjs/adapter-node-http": "^2.4.0",
     "@pollyjs/persister-fs": "^4.0.0",
