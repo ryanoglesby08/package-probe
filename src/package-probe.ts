@@ -5,6 +5,7 @@ import Table from 'cli-table'
 import isEmpty from 'lodash/isEmpty'
 
 import probe, { MatchResult } from './probe'
+// @ts-ignore - Don't compile the package.json file
 import { version as packageVersion } from '../package.json'
 
 program

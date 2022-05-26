@@ -17,8 +17,8 @@
     "url": "http://ryanogles.by/"
   },
   "repository": "github:ryanoglesby08/package-probe",
-  "main": "./bin/src/probe.js",
-  "bin": "./bin/src/package-probe.js",
+  "main": "./bin/probe.js",
+  "bin": "./bin/package-probe.js",
   "files": [
     "bin",
     "src"
