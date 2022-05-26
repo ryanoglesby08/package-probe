@@ -1,6 +1,6 @@
-import Octokit from '@octokit/rest'
-import fetch from 'node-fetch'
+import { Octokit, RestEndpointMethodTypes } from '@octokit/rest'
 import { URL } from 'url'
+import axios from 'axios'
 
 // https://developer.github.com/v3/search/#search-code
 export interface SearchCodeResult {
@@ -52,15 +52,20 @@ class GithubApiClient {
     }
 
     // Use the raw.githubusercontent.com web url to avoid rate limiting
-    const response = await fetch(`https://raw.githubusercontent.com/${repo}/${ref}/${path}`, {
-      method: 'GET',
-      headers,
-    })
-    return response.json()
+    const response = await axios.get<PackageJson>(
+      `https://raw.githubusercontent.com/${repo}/${ref}/${path}`,
+      {
+        headers,
+      }
+    )
+    return response.data
   }
 
-  async getRepo(owner: string, repo: string) {
-    return this.octokit.repos.get({ owner, repo })
+  async getRepo(
+    owner: string,
+    repo: string
+  ): Promise<RestEndpointMethodTypes['repos']['get']['response']> {
+    return await this.octokit.repos.get({ owner, repo })
   }
 }
 

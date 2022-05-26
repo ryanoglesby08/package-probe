@@ -1,20 +1,22 @@
 import path from 'path'
-import { setupPolly } from 'setup-polly-jest'
+import { PollyConfig, setupPolly } from 'setup-polly-jest'
+import { RestEndpointMethodTypes } from '@octokit/rest'
+import { MODES } from '@pollyjs/utils'
 import Octokit from '@octokit/rest'
 
 import probe from '../src/probe'
 
-let recordReplayConfig = {}
+let recordReplayConfig: Partial<PollyConfig> = {}
 if (process.env.CI) {
   recordReplayConfig = {
-    mode: 'replay',
+    mode: MODES.REPLAY,
     recordIfMissing: false,
   }
 }
 setupPolly({
   ...recordReplayConfig,
-  adapters: ['node-http'],
-  persister: 'fs',
+  adapters: [require('@pollyjs/adapter-node-http')],
+  persister: require('@pollyjs/persister-fs'),
   persisterOptions: {
     fs: {
       recordingsDir: path.resolve(__dirname, '__recordings__'),
@@ -30,20 +32,25 @@ setupPolly({
 it('finds versions of a package', async () => {
   const results = await probe({
     owner: 'ryanoglesby08',
-    searchTerm: 'commander',
+    searchTerm: 'react',
   })
 
   expect(results).toMatchInlineSnapshot(`
     Array [
       Object {
-        "packageName": "my-cli",
-        "repositoryName": "my-cli",
-        "version": "^2.14.1",
+        "packageName": "@the-eod-machine/ui",
+        "repositoryName": "the-eod-machine",
+        "version": "^16.4.1",
       },
       Object {
-        "packageName": "package-probe",
-        "repositoryName": "package-probe",
-        "version": "^2.9.0",
+        "packageName": "movie-night",
+        "repositoryName": "movie-night",
+        "version": "^16.7.0-alpha.2",
+      },
+      Object {
+        "packageName": "@the-eod-machine/emailer",
+        "repositoryName": "the-eod-machine",
+        "version": "^16.4.2",
       },
     ]
   `)
@@ -85,101 +92,22 @@ it('handles partial matches', async () => {
 
 it('filters out partial matches that end up being empty', async () => {
   // This can happen if the package.json contains the search string, but not in the dependencies
+  // Every package.json file has the word "license", but its not a dependency name
   const results = await probe({
     owner: 'ryanoglesby08',
-    searchTerm: 'eslint',
+    searchTerm: 'license',
     partialMatches: true,
   })
 
-  expect(results).toMatchInlineSnapshot(`
-    Array [
-      Object {
-        "packageName": "react-bare-app",
-        "repositoryName": "react-dashboard",
-        "version": Object {
-          "babel-eslint": "^7.2.3",
-          "eslint": "^3.19.0",
-          "eslint-loader": "^1.7.1",
-          "eslint-plugin-react": "^7.0.0",
-        },
-      },
-      Object {
-        "packageName": "@the-eod-machine/emailer",
-        "repositoryName": "the-eod-machine",
-        "version": Object {
-          "eslint": "^5.9.0",
-          "eslint-plugin-graphql": "^3.0.1",
-          "eslint-plugin-react": "^7.11.1",
-        },
-      },
-      Object {
-        "packageName": "@the-eod-machine/api",
-        "repositoryName": "the-eod-machine",
-        "version": Object {
-          "eslint": "^5.9.0",
-          "eslint-plugin-graphql": "^3.0.1",
-        },
-      },
-      Object {
-        "packageName": "react-quizzer",
-        "repositoryName": "react-quizzer",
-        "version": Object {
-          "eslint": "^2.13.1",
-          "eslint-loader": "^1.3.0",
-          "eslint-plugin-react": "^5.2.2",
-        },
-      },
-      Object {
-        "packageName": "splitit",
-        "repositoryName": "splitit",
-        "version": Object {
-          "eslint": "^3.6.0",
-          "eslint-loader": "^1.5.0",
-          "eslint-plugin-react": "^6.3.0",
-        },
-      },
-      Object {
-        "packageName": "ryan-oglesby-blog",
-        "repositoryName": "ryanoglesby08.github.com",
-        "version": Object {
-          "eslint": "^4.19.1",
-          "eslint-config-prettier": "^2.9.0",
-          "eslint-plugin-react": "^7.7.0",
-        },
-      },
-      Object {
-        "packageName": "react-bare-app",
-        "repositoryName": "react-bare-app",
-        "version": Object {
-          "eslint": "^3.19.0",
-          "eslint-loader": "^1.7.1",
-          "eslint-plugin-react": "^7.0.0",
-        },
-      },
-      Object {
-        "packageName": "@the-eod-machine/ui",
-        "repositoryName": "the-eod-machine",
-        "version": Object {
-          "eslint-plugin-graphql": "^3.0.1",
-        },
-      },
-      Object {
-        "packageName": "xhr-env-provider",
-        "repositoryName": "xhr-env-provider",
-        "version": Object {
-          "eslint": "^3.9.0",
-        },
-      },
-    ]
-  `)
+  expect(results).toMatchInlineSnapshot(`Array []`)
 })
 
 it('uses an access token if provided', async () => {
   /*
     This `accessToken` has been revoked so that it can be checked in.
-    If this test needs to be re-recorded, generate a new one.
+    If this test needs to be re-recorded, generate a new one. https://github.com/settings/tokens/new
   */
-  const accessToken = '76cc38b56ee4e98ad2b23fb72397984081b0186c'
+  const accessToken = ' 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'
 
   const results = await probe({
     accessToken,
@@ -190,14 +118,9 @@ it('uses an access token if provided', async () => {
   expect(results).toMatchInlineSnapshot(`
     Array [
       Object {
-        "packageName": "my-cli",
-        "repositoryName": "my-cli",
-        "version": "^2.14.1",
-      },
-      Object {
         "packageName": "package-probe",
         "repositoryName": "package-probe",
-        "version": "^2.9.0",
+        "version": "^3.0.0",
       },
     ]
   `)
@@ -220,51 +143,36 @@ it('requires a search term and owner', async () => {
 it('finds matches in dev dependencies', async () => {
   let results = await probe({
     owner: 'ryanoglesby08',
-    searchTerm: 'angular',
+    searchTerm: 'commitizen',
   })
 
   expect(results).toMatchInlineSnapshot(`
     Array [
       Object {
-        "packageName": undefined,
-        "repositoryName": "ng-inspect-watchers",
-        "version": "^1.4.3",
+        "packageName": "package-probe",
+        "repositoryName": "package-probe",
+        "version": "^4.0.0",
       },
     ]
   `)
 
   results = await probe({
     owner: 'ryanoglesby08',
-    searchTerm: 'grunt',
+    searchTerm: 'polly',
     partialMatches: true,
   })
 
   expect(results).toMatchInlineSnapshot(`
     Array [
       Object {
-        "packageName": undefined,
-        "repositoryName": "ng-inspect-watchers",
+        "packageName": "package-probe",
+        "repositoryName": "package-probe",
         "version": Object {
-          "grunt": "~0.4.5",
-          "grunt-contrib-compress": "~0.13.0",
-          "grunt-contrib-jshint": "~1.0",
-          "grunt-exec": "^0.4.6",
-        },
-      },
-      Object {
-        "packageName": "jquery-ui",
-        "repositoryName": "L8-travis-build-monitor",
-        "version": Object {
-          "grunt": "0.4.1",
-          "grunt-compare-size": "0.4.0-rc.3",
-          "grunt-contrib-concat": "0.1.3",
-          "grunt-contrib-csslint": "0.1.1",
-          "grunt-contrib-cssmin": "0.4.2",
-          "grunt-contrib-jshint": "0.7.1",
-          "grunt-contrib-qunit": "0.2.0",
-          "grunt-contrib-uglify": "0.1.1",
-          "grunt-git-authors": "1.2.0",
-          "grunt-html": "0.3.3",
+          "@pollyjs/adapter-fetch": "^4.0.0",
+          "@pollyjs/adapter-node-http": "^2.4.0",
+          "@pollyjs/core": "^4.0.0",
+          "@pollyjs/persister-fs": "^4.0.0",
+          "setup-polly-jest": "^0.6.0",
         },
       },
     ]
@@ -272,96 +180,94 @@ it('finds matches in dev dependencies', async () => {
 })
 
 it('can filter on repository properties, only returning results that satisfy all "include" filters', async () => {
-  const onlyInactiveRepos = (githubRepo: Octokit.ReposGetResponse) => {
-    return new Date(githubRepo.pushed_at).getFullYear() !== 2019
-  }
-  const onlyCssRepos = (githubRepo: Octokit.ReposGetResponse) => {
-    return githubRepo.name.includes('css')
+  const onlyMITLicenses = (
+    githubRepo: RestEndpointMethodTypes['repos']['get']['response']['data']
+  ) => {
+    return githubRepo.license.name.includes('MIT')
   }
 
   const results = await probe({
-    owner: 'ryanoglesby08',
+    owner: 'eslint',
     searchTerm: 'react',
-    include: [onlyInactiveRepos, onlyCssRepos],
+    include: [onlyMITLicenses],
   })
 
   expect(results).toMatchInlineSnapshot(`
     Array [
       Object {
-        "packageName": "exposing-css-hidden-complexities",
-        "repositoryName": "exposing-css-hidden-complexities",
-        "version": "^16.1.1",
+        "packageName": "eslint-website",
+        "repositoryName": "cn.eslint.org",
+        "version": "^16.13.1",
       },
       Object {
-        "packageName": "js-hide-instead-of-by-class",
-        "repositoryName": "css-playground",
-        "version": "^15.4.2",
+        "packageName": "eslint-website",
+        "repositoryName": "website",
+        "version": "^16.13.1",
       },
     ]
   `)
 })
 
 it('can filter on repository properties, excluding results that satisfy ANY "exclude" filters', async () => {
-  const notOldRepos = (githubRepo: Octokit.ReposGetResponse) => {
+  const notOldRepos = (githubRepo: RestEndpointMethodTypes['repos']['get']['response']['data']) => {
     return new Date(githubRepo.pushed_at).getFullYear() < 2018
   }
-  const notEodMachine = (githubRepo: Octokit.ReposGetResponse) => {
-    return githubRepo.name.includes('the-eod-machine')
+  const notEslintNamed = (
+    githubRepo: RestEndpointMethodTypes['repos']['get']['response']['data']
+  ) => {
+    return githubRepo.name.includes('eslint')
   }
 
   const results = await probe({
-    owner: 'ryanoglesby08',
+    owner: 'eslint',
     searchTerm: 'react',
-    exclude: [notOldRepos, notEodMachine],
+    exclude: [notOldRepos, notEslintNamed],
   })
 
   expect(results).toMatchInlineSnapshot(`
     Array [
       Object {
-        "packageName": "movie-night",
-        "repositoryName": "movie-night",
-        "version": "^16.7.0-alpha.2",
+        "packageName": "ESLint-Playground",
+        "repositoryName": "playground",
+        "version": "^18.1.0",
       },
       Object {
-        "packageName": "email-autocomplete",
-        "repositoryName": "email-autocomplete",
-        "version": "^16.5.2",
-      },
-      Object {
-        "packageName": "ssr-media-queries",
-        "repositoryName": "ssr-media-queries",
-        "version": "^16.2.0",
+        "packageName": "eslint-website",
+        "repositoryName": "website",
+        "version": "^16.13.1",
       },
     ]
   `)
 })
 
 it('can customize the output', async () => {
-  const appendFieldsToOutput = (githubRepo: Octokit.ReposGetResponse) => ({
+  const appendFieldsToOutput = (
+    githubRepo: RestEndpointMethodTypes['repos']['get']['response']['data']
+  ) => ({
     description: githubRepo.description,
     lastCommit: new Date(githubRepo.pushed_at).toLocaleDateString(),
   })
 
   const results = await probe({
     owner: 'ryanoglesby08',
-    searchTerm: 'angular',
+    searchTerm: 'commander',
     appendFieldsToOutput,
   })
 
   expect(results).toMatchInlineSnapshot(`
     Array [
       Object {
-        "description": "A Chrome Extension to inspect the watchers in an Angular app",
-        "lastCommit": "6/22/2016",
-        "packageName": undefined,
-        "repositoryName": "ng-inspect-watchers",
-        "version": "^1.4.3",
+        "description": "Scan a Github organization for usage of a package",
+        "lastCommit": "5/20/2022",
+        "packageName": "package-probe",
+        "repositoryName": "package-probe",
+        "version": "^3.0.0",
       },
     ]
   `)
 })
 
-it('shows the package/app name in addition to the repo name', async () => {
+it('shows the package name in addition to the repo name', async () => {
   // to better support monorepos
 
   const results = await probe({
@@ -382,19 +288,19 @@ it('shows the package/app name in addition to the repo name', async () => {
         },
       },
       Object {
-        "packageName": "@the-eod-machine/api",
-        "repositoryName": "the-eod-machine",
-        "version": Object {
-          "apollo-server": "^2.2.2",
-          "apollo-server-testing": "^2.2.2",
-        },
-      },
-      Object {
         "packageName": "@the-eod-machine/ui",
         "repositoryName": "the-eod-machine",
         "version": Object {
           "apollo-boost": "^0.1.10",
           "react-apollo": "^2.1.6",
+        },
+      },
+      Object {
+        "packageName": "@the-eod-machine/api",
+        "repositoryName": "the-eod-machine",
+        "version": Object {
+          "apollo-server": "^2.2.2",
+          "apollo-server-testing": "^2.2.2",
         },
       },
     ]

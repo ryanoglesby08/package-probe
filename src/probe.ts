@@ -1,5 +1,5 @@
 import { isEmpty } from 'lodash'
-import Octokit from '@octokit/rest'
+import { RestEndpointMethodTypes } from '@octokit/rest'
 
 import GithubApiClient, {
   SearchCodeResult,
@@ -60,8 +60,8 @@ const createFinalResults = async (
   for (const repo of matchedRepos) {
     const repoInfo = await apiClient.getRepo(owner, repo.repositoryName)
 
-    const shouldInclude = include.every(filter => filter(repoInfo.data))
-    const shouldExclude = exclude.some(filter => filter(repoInfo.data))
+    const shouldInclude = include.every((filter) => filter(repoInfo.data))
+    const shouldExclude = exclude.some((filter) => filter(repoInfo.data))
 
     if (!shouldExclude && shouldInclude) {
       const additionalFields = appendFieldsToOutput ? appendFieldsToOutput(repoInfo.data) : {}
@@ -77,9 +77,11 @@ const createFinalResults = async (
 }
 
 type AppendFieldsToOutputFunction = (
-  githubRepo: Octokit.ReposGetResponse
+  githubRepo: RestEndpointMethodTypes['repos']['get']['response']['data']
 ) => { [fieldName: string]: any }
-type RepoFilterFunction = (githubRepo: Octokit.ReposGetResponse) => boolean
+type RepoFilterFunction = (
+  githubRepo: RestEndpointMethodTypes['repos']['get']['response']['data']
+) => boolean
 
 interface ProbeOptions {
   accessToken?: string
