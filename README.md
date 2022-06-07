@@ -3,7 +3,7 @@
 [![npm version](https://img.shields.io/npm/v/package-probe.svg)](https://www.npmjs.com/package/package-probe)
 [![Build Status](https://api.travis-ci.org/ryanoglesby08/package-probe.svg)](https://travis-ci.org/ryanoglesby08/package-probe)<br />
 [![semantic release enabled](https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg)](https://github.com/ryanoglesby08/package-probe)
-[![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg)](http://commitizen.github.io/cz-cli/) [![Greenkeeper badge](https://badges.greenkeeper.io/ryanoglesby08/package-probe.svg)](https://greenkeeper.io/)
+[![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg)](http://commitizen.github.io/cz-cli/)
 
 Scan a Github organization for usage of a package.
 
@@ -54,17 +54,17 @@ While the CLI provides quick use, you have more control through the advanced opt
 ```ts
 type Options = {
   // Github Personal Access Token. Only necessary if scanning a private organization/owner.
-  accessToken?: string,
+  accessToken?: string
   // Function that adds fields to return along with the repository name and matched version
   appendFieldsToOutput: AppendFieldsToOutputFunction
   // Don't return results that match ANY of the provided filter functions
   exclude?: RepoFilterFunction[]
   // Only return results that match ALL the provided filter functions
-  include?: RepoFilterFunction[],
+  include?: RepoFilterFunction[]
   // The Github owner or organization to search in
-  owner: string,
+  owner: string
   // **Required**. If true, will match packages that partially match the provided search term. Otherwise, only exact matches will be returned. This option can be used to search for multiple packages that follow a naming schema.
-  partialMatches?: boolean,
+  partialMatches?: boolean
   // **Required**. The package name to search for. Must be the full name of the package, including the owner, unless you use the `partialMatches` option.
   searchTerm: string
 }
@@ -73,7 +73,9 @@ type Options = {
 type RepoFilterFunction = (githubRepo: Octokit.ReposGetResponse) => boolean
 
 // See Github REST API documentation (https://developer.github.com/v3/repos/#get) for available fields
-type AppendFieldsToOutputFunction = (githubRepo: Octokit.ReposGetResponse) => { [fieldName: string]: any }
+type AppendFieldsToOutputFunction = (githubRepo: Octokit.ReposGetResponse) => {
+  [fieldName: string]: any
+}
 ```
 
 ### Recipes
