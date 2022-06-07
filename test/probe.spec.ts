@@ -1,6 +1,7 @@
 import path from 'path'
-import { PollyConfig, setupPolly } from 'setup-polly-jest'
+import { setupPolly } from 'setup-polly-jest'
 import { MODES } from '@pollyjs/utils'
+import { PollyConfig } from '@pollyjs/core'
 
 import probe from '../src/probe'
 import { GetRepoResponse } from '../src/githubApiClient'
@@ -180,7 +181,7 @@ it('finds matches in dev dependencies', async () => {
 
 it('can filter on repository properties, only returning results that satisfy all "include" filters', async () => {
   const onlyMITLicenses = (githubRepo: GetRepoResponse['data']) => {
-    return githubRepo.license.name.includes('MIT')
+    return githubRepo.license?.name.includes('MIT') ?? false
   }
 
   const results = await probe({

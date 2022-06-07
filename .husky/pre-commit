@@ -3,5 +3,5 @@
 
 npx pretty-quick --staged
 
-npm run build
+npm run check-types
 npm test
