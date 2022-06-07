@@ -1,7 +1,7 @@
 # Package Probe 🛰
 
 [![npm version](https://img.shields.io/npm/v/package-probe.svg)](https://www.npmjs.com/package/package-probe)
-[![Build Status](https://api.travis-ci.org/ryanoglesby08/package-probe.svg)](https://travis-ci.org/ryanoglesby08/package-probe)<br />
+[![Build status](https://github.com/ryanoglesby08/package-probe/actions/workflows/main.yml/badge.svg)](https://github.com/ryanoglesby08/package-probe/actions/workflows/main.yml)<br />
 [![semantic release enabled](https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg)](https://github.com/ryanoglesby08/package-probe)
 [![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg)](http://commitizen.github.io/cz-cli/)
 
