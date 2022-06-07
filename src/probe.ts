@@ -1,10 +1,10 @@
 import { isEmpty } from 'lodash'
-import { RestEndpointMethodTypes } from '@octokit/rest'
 
 import GithubApiClient, {
   SearchCodeResult,
   PackageJson,
   PackageJsonDependencies,
+  GetRepoResponse,
 } from './githubApiClient'
 import { exactMatcher, partialMatcher, MatcherFunction } from './matchers'
 
@@ -76,12 +76,10 @@ const createFinalResults = async (
   return finalResults
 }
 
-type AppendFieldsToOutputFunction = (
-  githubRepo: RestEndpointMethodTypes['repos']['get']['response']['data']
-) => { [fieldName: string]: any }
-type RepoFilterFunction = (
-  githubRepo: RestEndpointMethodTypes['repos']['get']['response']['data']
-) => boolean
+type AppendFieldsToOutputFunction = (githubRepo: GetRepoResponse['data']) => {
+  [fieldName: string]: any
+}
+type RepoFilterFunction = (githubRepo: GetRepoResponse['data']) => boolean
 
 interface ProbeOptions {
   accessToken?: string

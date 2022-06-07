@@ -21,6 +21,8 @@ export interface PackageJson {
   devDependencies: PackageJsonDependencies
 }
 
+export type GetRepoResponse = RestEndpointMethodTypes['repos']['get']['response']
+
 class GithubApiClient {
   octokit: Octokit
   token: string | undefined
@@ -61,10 +63,7 @@ class GithubApiClient {
     return response.data
   }
 
-  async getRepo(
-    owner: string,
-    repo: string
-  ): Promise<RestEndpointMethodTypes['repos']['get']['response']> {
+  async getRepo(owner: string, repo: string): Promise<GetRepoResponse> {
     return await this.octokit.repos.get({ owner, repo })
   }
 }

@@ -1,10 +1,9 @@
 import path from 'path'
 import { PollyConfig, setupPolly } from 'setup-polly-jest'
-import { RestEndpointMethodTypes } from '@octokit/rest'
 import { MODES } from '@pollyjs/utils'
-import Octokit from '@octokit/rest'
 
 import probe from '../src/probe'
+import { GetRepoResponse } from '../src/githubApiClient'
 
 let recordReplayConfig: Partial<PollyConfig> = {}
 if (process.env.CI) {
@@ -180,9 +179,7 @@ it('finds matches in dev dependencies', async () => {
 })
 
 it('can filter on repository properties, only returning results that satisfy all "include" filters', async () => {
-  const onlyMITLicenses = (
-    githubRepo: RestEndpointMethodTypes['repos']['get']['response']['data']
-  ) => {
+  const onlyMITLicenses = (githubRepo: GetRepoResponse['data']) => {
     return githubRepo.license.name.includes('MIT')
   }
 
@@ -209,12 +206,10 @@ it('can filter on repository properties, only returning results that satisfy all
 })
 
 it('can filter on repository properties, excluding results that satisfy ANY "exclude" filters', async () => {
-  const notOldRepos = (githubRepo: RestEndpointMethodTypes['repos']['get']['response']['data']) => {
+  const notOldRepos = (githubRepo: GetRepoResponse['data']) => {
     return new Date(githubRepo.pushed_at).getFullYear() < 2018
   }
-  const notEslintNamed = (
-    githubRepo: RestEndpointMethodTypes['repos']['get']['response']['data']
-  ) => {
+  const notEslintNamed = (githubRepo: GetRepoResponse['data']) => {
     return githubRepo.name.includes('eslint')
   }
 
@@ -241,9 +236,7 @@ it('can filter on repository properties, excluding results that satisfy ANY "exc
 })
 
 it('can customize the output', async () => {
-  const appendFieldsToOutput = (
-    githubRepo: RestEndpointMethodTypes['repos']['get']['response']['data']
-  ) => ({
+  const appendFieldsToOutput = (githubRepo: GetRepoResponse['data']) => ({
     description: githubRepo.description,
     lastCommit: new Date(githubRepo.pushed_at).toLocaleDateString(),
   })
