@@ -14,3 +14,4 @@ jobs:
       - run: npm ci --ignore-scripts
       - run: npm run check-types
       - run: npm test
+      - run: npm run semantic-release
